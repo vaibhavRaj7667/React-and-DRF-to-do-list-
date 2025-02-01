@@ -24,8 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/',RegisterView.as_view(), name='register'),
     path('login/',LoginView.as_view(),name="login"),
+    path('post/',Task.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),    
-    path('', Home.as_view()),
+    path('home/', Home.as_view(),name="Home"),
+    path('user/',ProtectedView.as_view(),name="ProtectedView"),
+    path('logout/',LogoutView.as_view(),name="LogoutView")
 
 ]
