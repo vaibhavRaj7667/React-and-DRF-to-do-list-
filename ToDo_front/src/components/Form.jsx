@@ -1,9 +1,26 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 
-const Form = () => {
+const Form = (props) => {
     const [task , setTask]= useState('')
+
     const handelogin= async(e)=>{
-        e.preventDefault();
+      e.preventDefault();
+      try {
+          const response = await axios.post(
+              "http://127.0.0.1:8000/post/",
+              { details: task },  // ✅ Send task details in the request body
+              {
+                  headers: {
+                      Authorization: `Bearer ${props.access}`,  // ✅ Proper header format
+                      "Content-Type": "application/json"
+                  }
+              }
+          );
+          console.log(response.data);  // ✅ Handle response
+      } catch (error) {
+          console.error("Error posting task:", error);
+      }
 
     }
     

@@ -6,9 +6,11 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [user , setuser]= useState([]);
+  const [acces, setAcces]= useState()
+  const [taskData,setTaskData]=useState([])
 
 
-
+console.log(taskData)
 
   const refreshAccessToken = async (refreshToken) => {
     try {
@@ -73,6 +75,8 @@ const Home = () => {
       const accessToken = localStorage.getItem("access_token");
       const refreshToken = localStorage.getItem("refresh_token");
 
+      setAcces(accessToken)
+
       if (!accessToken || !refreshToken) {
         setError("No token found. Please login.");
         return;
@@ -85,14 +89,16 @@ const Home = () => {
             Authorization: `Bearer ${accessToken}`, // Attach JWT access token
           },
         });
-
+        
+        
+        setTaskData(response.data.data)
         setMessage(response.data.message); // Set message from backend
       } catch (error) {
-        // If the access token is expired (401), attempt to refresh it
+        
         if (error.response && error.response.status === 401) {
           const newAccessToken = await refreshAccessToken(refreshToken);
           if (newAccessToken) {
-            // Retry fetching the message with the new access token
+           
             const retryResponse = await axios.get("http://127.0.0.1:8000/home/", {
               headers: {
                 Authorization: `Bearer ${newAccessToken}`,
@@ -149,11 +155,24 @@ const Home = () => {
     <div>
       <h1>Home Page</h1>
       <h1>{user.user}hi</h1>
+
       {error ? <p style={{ color: "red" }}>{error}</p> : <p>{message}</p>}
 
-    <Form/>
+        <Form access={acces}/>
 
     <button onClick={logout}>logout</button>
+
+      <p>
+            {taskData.map((task,id)=>(
+              <>
+              <h1>{task.details}</h1>
+              
+              </>
+              
+            ))}
+
+      </p>
+    
 
 
     </div>

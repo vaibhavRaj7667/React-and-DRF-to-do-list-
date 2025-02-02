@@ -10,6 +10,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
+from .models import task
 
 
 class RegisterView(APIView):
@@ -44,7 +45,16 @@ class ProtectedView(APIView):
 class Home(APIView):
 
     def get(self, request):
+        Data = task.objects.filter(user= request.user).all()
+        data = ProductSerializer(Data,many=True)
+        
         content = {'message': 'Hello, World!'}
+        
+
+        content = {
+            'message': 'Hello, World!',
+            'data': data.data  # Serialized task data
+        }
         return Response(content)
     
 
@@ -54,8 +64,8 @@ class Task(APIView):
         
         serializer = ProductSerializer(data = request.data)
         if serializer.is_valid():
-
-            serializer.save()
+            serializer.save(user = request.user)
+            
             return JsonResponse(serializer.data,status=200)
         else:
             return JsonResponse(serializer.errors,status=400)

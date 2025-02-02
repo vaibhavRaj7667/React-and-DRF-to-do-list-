@@ -22,7 +22,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = task
-        fields = '__all__'
+        fields = ['id','details']
+
+
 
 
         
