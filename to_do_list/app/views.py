@@ -57,6 +57,14 @@ class Home(APIView):
         }
         return Response(content)
     
+    def delete(self, request, pk):
+        data = task.objects.get(id = pk)
+        data.delete()
+        return Response({"message":"sucess"}, status=status.HTTP_200_OK)
+        
+        
+    
+    
 
 class Task(APIView):
 

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Form from "../components/Form";
+import { redirect } from "react-router";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [user , setuser]= useState([]);
-  const [acces, setAcces]= useState()
-  const [taskData,setTaskData]=useState([])
+  const [acces, setAcces]= useState();
+  const [taskData,setTaskData]=useState([]);
+  const navigate = useNavigate();
 
 
 console.log(taskData)
@@ -57,6 +60,7 @@ console.log(taskData)
         // Remove tokens after successful logout
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("access_token");
+        navigate('/')
 
     } catch (error) {
         console.error("Logout failed:", error.response ? error.response.data : error.message);
@@ -142,6 +146,18 @@ console.log(taskData)
     fetchuser();
   },[])
 
+  const remove = async(id)=>{
+    const token = localStorage.getItem("access_token");
+    const response = await axios.delete(`http://127.0.0.1:8000/home/${id}/`,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    console.log(response.message)
+    console.log(response.data)
+    setTaskData((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  }
 
 
 
@@ -166,6 +182,9 @@ console.log(taskData)
             {taskData.map((task,id)=>(
               <>
               <h1>{task.details}</h1>
+              
+
+              <button onClick={()=>{remove(task.id)}}>delete</button>
               
               </>
               
